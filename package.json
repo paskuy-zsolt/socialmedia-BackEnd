@@ -1,0 +1,31 @@
+{
+  "name": "final-project",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A Node.js RESTful API Project (Build a simple social media API)",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon --experimental-modules --es-module-specifier-resolution=node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node",
+    "restful",
+    "api"
+  ],
+  "author": "Paskuy Zsolt-Ferenc",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.1.1",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.9",
+    "nodemon": "^3.0.3"
+  }
+}
