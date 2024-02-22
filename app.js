@@ -9,6 +9,8 @@ app.use(express.json());
 
 routes(app);
 
+// OK
+
 startCronJob();
 
 export { app };
