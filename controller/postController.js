@@ -19,14 +19,10 @@ export const getAllPosts = async (req, res, next) => {
 };
 
 export const getPostById = async (req, res, next) => {
-    const id = req.params.id;
+    const postId = req.params.postId.replace(/^:/, '');
 
     try {
-        const cleanedId = id.replace(/^:/, '');
-        const post = await Post.findById(cleanedId);
-
-        console.log(cleanedId);
-        console.log(post);
+        const post = await Post.findById(postId);
 
         if(!post) {
             return responseError(res, "Post not found", 404);
@@ -42,9 +38,7 @@ export const getPostById = async (req, res, next) => {
 export const addPost = async (req, res, next) => {
     const { title, content, attachments } = req.body;
     const author = req.user._id;
-
-    console.log("Author ID:", author);
-
+    
     let user;
 
     try {
@@ -93,11 +87,10 @@ export const addPost = async (req, res, next) => {
 }
 
 export const getByUserId = async (req, res, next) => {
-    const userId = req.params.id;
-    const cleanedIdUserId = userId.replace(/^:/, '');
+    const userId = req.params.userId.replace(/^:/, '');
 
     try {
-        const userPost = await User.findById(cleanedIdUserId).populate("posts");
+        const userPost = await User.findById(userId).populate("posts");
         
         if (!userPost) {
             return responseError(res, "User not found.", 404);
@@ -116,13 +109,12 @@ export const getByUserId = async (req, res, next) => {
 
 export const updatePost = async (req, res, next) => {
     const { title, content, attachments } = req.body;
-    const postId = req.params.id;
-    const cleanedId = postId.replace(/^:/, '');
+    const postId = req.params.postId.replace(/^:/, '');
 
     let post
 
     try {
-        post = await Post.findById(cleanedId);
+        post = await Post.findById(postId);
 
         if(!post) {
             return responseError(res, "Post not found", 404);
@@ -149,11 +141,10 @@ export const updatePost = async (req, res, next) => {
 }
 
 export const deletePost = async (req, res, next) => {
-    const id = req.params.id;
-    const cleanedId = id.replace(/^:/, '');
+    const postId = req.params.postId.replace(/^:/, '');
 
     try {
-        const post = await Post.findByIdAndDelete(cleanedId).populate('authorId');
+        const post = await Post.findByIdAndDelete(postId).populate('authorId');
 
         if (!post) {
             return responseError(res, "Post not found.", 404);
@@ -169,5 +160,34 @@ export const deletePost = async (req, res, next) => {
     } catch (error) {
         console.error("Error deleting post:", error);
         return responseServerError(res, "Failed to delete post.");
+    }
+}
+
+export const likedPost = async (req, res, next) => {
+    const postId = req.params.postId.replace(/^:/, '');
+    const userId = req.user._id;
+
+    try {
+        const post = await Post.findById(postId);
+
+        if(!post) {
+            return responseError(res, "Post not found.", 404);
+        }
+
+        if (!post.likes.includes(userId)) {
+            post.likes.push(userId);
+            post.likesCount += 1;
+        } else {
+            const index = post.likes.indexOf(userId);
+            post.likes.splice(index, 1);
+            post.likesCount -= 1;
+        }
+        
+        await post.save();
+
+        return responseSuccess(res, post);
+    } catch (error) {
+        console.error('Error liking/disliking post:', error);
+        return responseServerError(res, "Failed to like/dislike post.");
     }
 }

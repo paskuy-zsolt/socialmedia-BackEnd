@@ -1,19 +1,21 @@
-import { addPost, deletePost, getAllPosts, getByUserId, getPostById, updatePost } from "../controller/postController.js";
+import { addPost, deletePost, getAllPosts, getByUserId, getPostById, likedPost, updatePost } from "../controller/postController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 export const postRoutes = (app) => {
+    app.use(authMiddleware);
 
     // Search Post
     app.get("/", getAllPosts);
-    app.get("/post/:id", getPostById);
-    app.get("/post/user/:id", getByUserId);
+    app.get("/post/:postId", getPostById);
+    app.get("/post/user/:userId", getByUserId);
 
-    // Creating Post
-    app.post("/post/create", authMiddleware, addPost);
-    
+    // Manipulate Post (create, like, dislike, comment)
+    app.post("/post/create", addPost);
+    app.post("/post/:postId/like", likedPost);
+
     // Update Post
-    app.patch("/post/:id", authMiddleware, updatePost);
+    app.put("/post/:postId", updatePost);
 
     // Delete Post
-    app.delete("/post/:id", authMiddleware ,deletePost);
+    app.delete("/post/:postId", deletePost);
 }

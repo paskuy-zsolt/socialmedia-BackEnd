@@ -18,14 +18,22 @@ const postSchema = new Schema({
         ref: "User",
         required: true,
     },
-    tags: {
-        type: String
-    },
     attachments: {
         type: String
     },
-    // comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-    // likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    likes: [{
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    }],
+    likesCount: {
+        type: Number,
+        default: 0,
+    },
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: "Comment",
+    }],
+    // tags: { type: String },
     // visibility: { type: String, enum: ['public', 'private', 'restricted'], default: 'public' },
 });
 

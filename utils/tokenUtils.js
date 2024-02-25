@@ -23,23 +23,3 @@ export const verifyResetToken = (token) => {
         return null;
     }
 };
-
-import cron from 'node-cron';
-import PasswordResetToken from '../model/PasswordResetToken.js';
-import LoginToken from '../model/LoginToken.js';
-
-export const startCronJob = () => {
-    cron.schedule('*/1 * * * *', async () => {
-        try {
-            const now = new Date();
-
-            const passwordResetResult = await PasswordResetToken.deleteMany({ expires: { $lte: now } });
-            console.log('Expired PasswordResetToken deleted successfully. Deleted count:', passwordResetResult.deletedCount);
-
-            const loginTokenResult = await LoginToken.deleteMany({ expires: { $lte: now } });
-            console.log('Expired LoginToken deleted successfully. Deleted count:', loginTokenResult.deletedCount);
-        } catch (error) {
-            console.error('Error deleting expired tokens:', error);
-        }
-    });
-};
