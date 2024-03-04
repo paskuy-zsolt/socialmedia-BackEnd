@@ -5,7 +5,7 @@ export const postRoutes = (app) => {
     app.use(authMiddleware);
 
     // Search Post
-    app.get("/", getAllPosts);
+    app.get("/feed", getAllPosts);
     app.get("/post/:postId", getPostById);
     app.get("/post/user/:userId", getByUserId);
 
