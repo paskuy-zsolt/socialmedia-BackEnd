@@ -99,16 +99,22 @@ export const logIn = async (req, res, next) => {
         }
         
         const token = generateAuthToken(existingUser);
+        const expiration = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
         const loginToken = new LoginToken({
             user: existingUser._id,
             token,
-            expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
+            expires: expiration
         });
         
         await loginToken.save();
 
-        return responseSuccess(res, { message: 'Logged in successfully.', token });
+        // Set the Authorization header with the token
+        res.setHeader('Authorization', `${token}`);
+        res.setHeader('Expires', expiration.toUTCString());
+
+        // Send the success response without the token in the body
+        return responseSuccess(res, { message: 'Logged in successfully.' });
     } catch (error) {
         console.error("Error during user login:", error);
         return responseServerError(res, 'Error during user login:');
