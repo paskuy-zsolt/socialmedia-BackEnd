@@ -24,7 +24,7 @@ export async function sendEmail(email, name, resetToken) {
         <p>Dear ${name},</p>
         <p>This is a request to reset your password login credential to <strong>Connect Hub</strong>. To ensure the security of your account, we have initiated the password reset process.</p>
         <p>Below are the link to reset your password:</p>
-        <p>http://localhost:3000/user/reset-password/:${resetToken} .</p>
+        <p>http://localhost:3000/reset-password/:${resetToken} .</p>
         <p>Accessing the following link you will be redirected to enter a new password. With the new password you will now log in to your account.</p>
         <p>Thank you for your attention to this matter.</p>
         <p>Best regards, <br>Connect Hub Team</p>`;

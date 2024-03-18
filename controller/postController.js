@@ -6,7 +6,8 @@ import { formatValidationErrors } from "../utils/validationUtils.js";
 
 export const getAllPosts = async (req, res, next) => {
     try {
-        let posts = await Post.find();
+        let posts = await Post.find().populate('comments');
+        // More efficient with query parameter (later)
 
         if (!posts) {
             return responseError(res, "No posts found.", 404);
