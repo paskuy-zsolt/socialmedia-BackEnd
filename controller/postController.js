@@ -57,7 +57,8 @@ export const addPost = async (req, res, next) => {
         title,
         content,
         authorId: author,
-        attachments
+        attachments,
+        time
     });
 
     try {

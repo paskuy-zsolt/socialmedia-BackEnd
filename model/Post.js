@@ -33,25 +33,13 @@ const postSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Comment",
     }],
+    time: [{
+        type : Date,
+        default: Date.now
+    }]
+
     // tags: { type: String },
     // visibility: { type: String, enum: ['public', 'private', 'restricted'], default: 'public' },
-});
-
-postSchema.virtual('date').get(function() {
-    const currentDate = new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest' }).split(',')[0];
-    return currentDate;
-});
-
-postSchema.virtual('time').get(function() {
-    const currentTime = new Date().toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest' }).split(',')[1].trim();
-    return currentTime;
-});
-
-postSchema.set('toJSON', {
-    virtuals: true,
-    transform: function (doc, ret) {
-        ret.id = undefined; // Exclude 'id' from JSON
-    }
 });
 
 export default mongoose.model("Post", postSchema);
