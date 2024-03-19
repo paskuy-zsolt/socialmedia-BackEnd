@@ -33,10 +33,10 @@ const postSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Comment",
     }],
-    time: [{
+    createdAt: {
         type : Date,
         default: Date.now
-    }]
+    }
 
     // tags: { type: String },
     // visibility: { type: String, enum: ['public', 'private', 'restricted'], default: 'public' },
