@@ -6,14 +6,33 @@ import { formatValidationErrors } from "../utils/validationUtils.js";
 
 export const getAllPosts = async (req, res, next) => {
     try {
-        let posts = await Post.find().populate('comments');
-        // More efficient with query parameter (later)
+        // Extract page and limit from query parameters, set default values if not provided
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        
+        // Calculate how many posts to skip
+        const skip = (page - 1) * limit;
 
-        if (!posts) {
+        // Find posts, populate comments, and apply pagination
+        let posts = await Post.find()
+            .populate('comments')
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 }); // Sort by date created (newest first)
+
+        // Count total number of posts for calculating total pages
+        const totalPosts = await Post.countDocuments();
+
+        if (!posts.length) {
             return responseError(res, "No posts found.", 404);
         }
 
-        return responseSuccess(res, { posts });
+        // Return paginated posts with totalPages and currentPage info
+        return responseSuccess(res, {
+            posts,
+            totalPages: Math.ceil(totalPosts / limit),
+            currentPage: page,
+        });
     } catch (error) {
         return responseServerError(res, "Failed to fetch posts.");
     }
