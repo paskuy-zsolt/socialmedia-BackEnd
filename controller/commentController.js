@@ -10,8 +10,12 @@ export const getCommentsFromPost = async (req, res, next) => {
     try {
         const comments = await Comment.find({ post: postId });
 
-        if (!comments || comments.length === 0) {
+        if (!comments) {
             return responseError(res, "Comments not found for this post.", 404);
+        }
+
+        if (comments.length === 0) {
+            return responseSuccess(res, "No comments yet.", 200);
         }
         
         return responseSuccess(res, { comments });
