@@ -13,12 +13,8 @@ export const getCommentsFromPost = async (req, res, next) => {
         if (!comments) {
             return responseError(res, "Comments not found for this post.", 404);
         }
-
-        if (comments.length === 0) {
-            return responseSuccess(res, "No comments yet.", 200);
-        }
         
-        return responseSuccess(res, { comments });
+        return responseSuccess(res, { comments: comments || [] });
     } catch (error) {
         console.error("Error fetching comments:", error);
         return responseServerError(res, "Failed to fetch comments.");
