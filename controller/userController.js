@@ -6,7 +6,8 @@ import { generateAuthToken, generateResetToken, verifyResetToken } from '../util
 import { sendEmail } from "../utils/emailUtils.js";
 import { responseSuccess, responseError, responseServerError } from "../utils/responseUtils.js";
 import { formatValidationErrors } from "../utils/validationUtils.js";
-
+import Comment from "../model/Comment.js";
+import Post from "../model/Post.js";
 
 export const getAllUsers = async (req, res, next) => {
     try {
@@ -150,18 +151,37 @@ export const deleteUser = async (req, res, next) => {
             return responseError(res, "User not found.", 404);
         }
 
-        await Post.deleteMany({ userId: id });
-        await Comment.deleteMany({ userId: id });
-        await Like.deleteMany({ userId: id });
+        // Delete posts created by the user
+        await Post.deleteMany({ authorId: id });
+
+        // Delete comments by the user
+        await Comment.deleteMany({ user: id });
+
+        // Delete likes associated with the user's posts
+        await Post.updateMany(
+            { likes: id }, // Find posts where the user is in the likes array
+            { 
+                $pull: { likes: id },  // Remove the user's ID from the likes array
+                $inc: { likesCount: -1 } // Decrement the likes count by 1
+            }
+        );
+        // Delete login tokens associated with the user
         await LoginToken.findOneAndDelete({ user: id });
+
+        // Delete password reset tokens associated with the user
+        await PasswordResetToken.findOneAndDelete({ user: id });
+
+        // Delete the user itself
         await User.findByIdAndDelete(id);
 
         return responseSuccess(res, { message: "User and related data deleted successfully." });
+
     } catch (error) {
         console.error("Error deleting user and related data:", error);
         return responseServerError(res, "Failed to delete user and related data.");
     }
 };
+
 
 export const recoverPassword = async (req, res, next) => {
     const { email } = req.body;
