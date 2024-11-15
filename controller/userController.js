@@ -144,18 +144,22 @@ export const deleteUser = async (req, res, next) => {
     const id = req.params.id.replace(/^:/, '');
 
     try {
-        const user = await User.findByIdAndDelete(id);
+        const user = await User.findById(id);
 
         if (!user) {
             return responseError(res, "User not found.", 404);
         }
 
+        await Post.deleteMany({ userId: id });
+        await Comment.deleteMany({ userId: id });
+        await Like.deleteMany({ userId: id });
         await LoginToken.findOneAndDelete({ user: id });
+        await User.findByIdAndDelete(id);
 
-        return responseSuccess(res, { message: "User deleted successfully." });
+        return responseSuccess(res, { message: "User and related data deleted successfully." });
     } catch (error) {
-        console.error("Error deleting user:", error);
-        return responseServerError(res, "Failed to delete user.");
+        console.error("Error deleting user and related data:", error);
+        return responseServerError(res, "Failed to delete user and related data.");
     }
 };
 
