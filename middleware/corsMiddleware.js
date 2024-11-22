@@ -1,7 +1,7 @@
 import cors from 'cors';
 
 const corsOptions = {
-    origin: ['https://your-frontend-domain.com'],
+    // origin: ['https://your-frontend-domain.com'],
     allowedHeaders: ['Authorization', 'Date', 'Content-Type', 'Expires'],
     exposedHeaders: ['Authorization', 'Date', 'Content-Length'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
