@@ -7,7 +7,7 @@ dotenv.config();
 
 const port = process.env.PORT;
 
-const server = http.createServer(app);
+const server = https.createServer(options, app);
 
 const mongoConnection = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_URL}?retryWrites=true&w=majority`;
 
