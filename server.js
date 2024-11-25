@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import http from 'http';
+import https from 'http';
 import { app } from './app.js';
 import mongoose from 'mongoose';
 
