@@ -8,16 +8,16 @@ export const userRoutes = (app) => {
     app.get("/user/:id", getUserById);
 
     // Account related
-    app.post("/sign-up", signUp);   //Done
-    app.post("/login", logIn);  //Done
+    app.post("/sign-up", signUp);
+    app.post("/login", logIn);
     app.post("/user/logout", authMiddleware, logOut);
 
     // Authentication token debug
     app.post("/user/restricted", authMiddleware);
 
     // Password reset
-    app.post("/reset-password", recoverPassword);   //Done
-    app.post("/reset-password/:token", resetPassword);  //Done
+    app.post("/reset-password", recoverPassword);
+    app.post("/reset-password/:token", resetPassword);
 
     // Delete User
     app.delete("/user/:id", authMiddleware, deleteUser);
