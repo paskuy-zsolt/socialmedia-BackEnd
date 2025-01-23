@@ -12,8 +12,6 @@ app.use(corsMiddleware); // CORS Middleware
 app.use(helmetMiddleware); // Helmet Middleware for security
 app.use(sanitizeInput); // Input Sanitization Middleware
 
-app.options('*', corsMiddleware);
-
 routes(app); // Define your routes
 
 startCronJob(); // Start cron job for token cleanup
