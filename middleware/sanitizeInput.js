@@ -12,9 +12,10 @@ export const sanitizeInput = (req, res, next) => {
   next();
 };
 
+const urlRegex = /https?:\/\/(www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(\S*)?/g;
+
 const sanitizeObject = (obj) => {
   if (obj && typeof obj === 'object') {
-    // Handle arrays
     if (Array.isArray(obj)) {
       return obj.map(item => sanitizeObject(item));
     }
@@ -26,11 +27,25 @@ const sanitizeObject = (obj) => {
     });
 
     return sanitizedObj;
-
-  } else if (typeof obj === 'string') {
-    return xss(obj);
-
-  } else {
-    return obj;
   }
+
+  if (typeof obj === 'string') {
+    return sanitizeString(obj);
+  }
+  
+  return obj;
+};
+
+const sanitizeString = (str) => {
+  let sanitized = "";
+  let lastIndex = 0;
+
+  for (const match of str.matchAll(urlRegex)) {
+    sanitized += xss(str.substring(lastIndex, match.index));
+    sanitized += match[0];
+    lastIndex = match.index + match[0].length;
+  }
+
+  sanitized += xss(str.substring(lastIndex));
+  return sanitized;
 };
