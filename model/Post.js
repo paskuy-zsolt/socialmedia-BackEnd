@@ -6,8 +6,8 @@ const postSchema = new Schema({
     title: {
         type: String,
         required: [true, "Title is required!"],
-        minlength: [3, "Title must have at least 3 letters"],
-        maxlength: [300, "Title is too long"]
+        minlength: [10, "Title must have at least 10 letters"],
+        maxlength: [60, "Title is too long"]
     },
     content: {
         type: String,
@@ -37,9 +37,6 @@ const postSchema = new Schema({
         type : Date,
         default: Date.now
     }
-
-    // tags: { type: String },
-    // visibility: { type: String, enum: ['public', 'private', 'restricted'], default: 'public' },
 });
 
 export default mongoose.model("Post", postSchema);
