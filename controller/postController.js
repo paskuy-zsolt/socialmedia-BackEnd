@@ -23,12 +23,9 @@ export const getAllPosts = async (req, res, next) => {
         // Count total number of posts for calculating total pages
         const totalPosts = await Post.countDocuments();
 
-        if (!posts.length) {
-            return responseError(res, "No posts found.", 404);
-        }
-
         // Return paginated posts with totalPages and currentPage info
         return responseSuccess(res, {
+            message: posts.length ? "Posts fetched successfully." : "No posts available.",
             posts,
             totalPages: Math.ceil(totalPosts / limit),
             currentPage: page,
@@ -80,28 +77,29 @@ export const addPost = async (req, res, next) => {
     });
 
     try {
-        const validationError = post.validateSync();
+        await post.validate();
+    } catch (validationError) {
+        const errors = formatValidationErrors(validationError.errors);
+        return responseError(res, errors, 422);
+    }
 
-        if (validationError) {
-            const errors = formatValidationErrors(post.errors)
-            return responseError(res, errors, 422);
-        }
-        
-        const session = await mongoose.startSession();
-        session.startTransaction();
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
+    try {        
         await post.save({ session });
 
         user.posts.push(post);
-
         await user.save({ session });
 
         await session.commitTransaction();
-        
+        session.endSession();
+
         return responseSuccess(res, { post });
     } catch (error) {
         console.error("Error while creating post:", error);
         await session.abortTransaction();
+        session.endSession();
         return responseServerError(res, "Failed to create post.");
     }
 }
