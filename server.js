@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
+dotenv.config();
+
 import https from 'http';
 import { app } from './app.js';
 import mongoose from 'mongoose';
-
-dotenv.config();
 
 const port = process.env.PORT;
 
