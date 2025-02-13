@@ -1,13 +1,17 @@
-import { getAllUsers, getUserById, logIn, signUp, recoverPassword, resetPassword, deleteUser, logOut } from "../controller/userController.js";
+import { getAllUsers, getUserById, getUserProfile, logIn, signUp, recoverPassword, resetPassword, deleteUser, logOut, updateUserProfile } from "../controller/userController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js"
+import { resizeAndUpload, uploadProfileImage } from "../middleware/uploadMiddleware.js";
 
 export const userRoutes = (app) => {
 
     // Search User
     app.get("/users", getAllUsers);
     app.get("/user/:id", getUserById);
-
+    app.get("/user/:id/profile", authMiddleware, getUserProfile);
+    
     // Account related
+    app.patch("/user/:id/update-profile", authMiddleware, uploadProfileImage, resizeAndUpload, updateUserProfile);
+
     app.post("/sign-up", signUp);
     app.post("/login", logIn);
     app.post("/user/logout", authMiddleware, logOut);
