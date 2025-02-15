@@ -35,9 +35,8 @@ const userProfileSchema = new Schema({
     type: String,
     trim: true,
     maxlength: [50, "Nickname is too long"],
-    required: false,
-    sparse: true,
-  },  
+    required: false, 
+},
   phone: {
     type: String,
     match: [phoneRegex, "Phone number must follow E.164 format (+123456789)"],
