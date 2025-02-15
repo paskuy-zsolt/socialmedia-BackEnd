@@ -286,6 +286,24 @@ export const deleteUser = async (req, res, next) => {
             return responseError(res, "User not found.", 404);
         }
 
+        const profileUser = await UserProfile.findOne({ userID: user._id });
+        
+        if(profileUser) {
+            if (profileUser.avatar) {
+                const imageUrl = profileUser.avatar;
+                const urlParts = imageUrl.split("/");
+                const imageKey = urlParts.slice(3).join("/");
+
+                // Delete old image from S3
+                await s3.send(new DeleteObjectCommand({
+                    Bucket: process.env.AWS_BUCKET_NAME,
+                    Key: imageKey
+                }));
+            }
+
+            await UserProfile.findByIdAndDelete(profileUser._id);
+        }
+
         // Delete posts created by the user
         await Post.deleteMany({ authorId: id });
 
